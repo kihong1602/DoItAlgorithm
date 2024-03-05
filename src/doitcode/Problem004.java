@@ -22,28 +22,41 @@ public class Problem004 {
           .toArray();
       int boardSize = sizes[0];
       int questionSize = sizes[1];
-      int[][] board = new int[boardSize][boardSize];
-      for (int i = 0; i < boardSize; i++) {
+      int[][] board = new int[boardSize + 1][boardSize + 1];
+      for (int i = 1; i <= boardSize; i++) {
         int[] inputs = Arrays.stream(br.readLine()
                 .split(" "))
             .mapToInt(Integer::parseInt)
             .toArray();
-        for (int j = 0; j < boardSize; j++) {
-          board[i][j] = inputs[j];
+        for (int j = 1; j <= boardSize; j++) {
+          board[i][j] = inputs[j - 1];
         }
       }
 
-      //여기서 구간합 구하기 -> 아침에
+      // 2차원배열 구간합 공식
+      // sum[i][j] = sum[i][j-1] + sum[i-1][j] - sum[i-1][j-1] + board[i][j]
+      int[][] sum = new int[boardSize + 1][boardSize + 1];
+      for (int i = 1; i <= boardSize; i++) {
+        for (int j = 1; j <= boardSize; j++) {
+          sum[i][j] = sum[i][j - 1] + sum[i - 1][j] - sum[i - 1][j - 1] + board[i][j];
+        }
+      }
 
+      StringBuilder sb = new StringBuilder();
       while (questionSize-- > 0) {
         int[] indexes = Arrays.stream(br.readLine()
                 .split(" "))
             .mapToInt(Integer::parseInt)
             .toArray();
         int x1 = indexes[0], y1 = indexes[1], x2 = indexes[2], y2 = indexes[3];
-
+        // 두 좌표가 주어진 구간합 공식
+        // sum[x2][y2] - sum[x1-1][y2] - sum[x2][y1-1] + sum[x1-1][y1-1]
+        int result = sum[x2][y2] - sum[x1 - 1][y2] - sum[x2][y1 - 1] + sum[x1 - 1][y1 - 1];
+        sb.append(result)
+            .append("\n");
       }
-
+      bw.write(sb.toString());
+      bw.flush();
     } catch (IOException e) {
       e.printStackTrace();
     }
