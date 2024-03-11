@@ -21,34 +21,39 @@ public class Problem008 {
           .mapToInt(Integer::parseInt)
           .sorted()
           .toArray();
-      int result = 0;
-      for (int i = 0; i < size; i++) {
-        int find = inputs[i];
-        int leftPoint = 0;
-        int rightPoint = inputs.length - 1;
-
-        while (leftPoint < rightPoint) {
-          int sum = inputs[leftPoint] + inputs[rightPoint];
-          if (sum == find) {
-            if (leftPoint != i && rightPoint != i) {
-              result++;
-              break;
-            } else if (leftPoint == i) {
-              leftPoint++;
-            } else if (rightPoint == i) {
-              rightPoint--;
-            }
-          } else if (sum < find) {
-            leftPoint++;
-          } else {
-            rightPoint--;
-          }
-        }
-      }
+      int result = solution(size, inputs);
       bw.write(String.valueOf(result));
       bw.flush();
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  private static int solution(int size, int[] inputs) {
+    int result = 0;
+    for (int i = 0; i < size; i++) {
+      int find = inputs[i];
+      int leftPoint = 0;
+      int rightPoint = inputs.length - 1;
+
+      while (leftPoint < rightPoint) {
+        int sum = inputs[leftPoint] + inputs[rightPoint];
+        if (sum == find) {
+          if (leftPoint != i && rightPoint != i) {
+            result++;
+            break;
+          } else if (leftPoint == i) {
+            leftPoint++;
+          } else {
+            rightPoint--;
+          }
+        } else if (sum < find) {
+          leftPoint++;
+        } else {
+          rightPoint--;
+        }
+      }
+    }
+    return result;
   }
 }
