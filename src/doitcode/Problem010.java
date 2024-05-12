@@ -5,62 +5,58 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 public class Problem010 {
 
   // 백준 11003 플래티넘 최솟값 찾기
   // 슬라이딩 윈도우
-  public static void main(String[] args) {
-    try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))) {
-      String[] inputSizes = br.readLine()
-          .split(" ");
-      int windowSize = Integer.parseInt(inputSizes[1]);
-
-      int[] array = Arrays.stream(br.readLine()
-              .split(" "))
-          .mapToInt(Integer::parseInt)
-          .toArray();
-
-      String result = solution(array, windowSize);
-      bw.write(result);
-      bw.flush();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private static String solution(int[] array, int windowSize) {
+  private static String solution(int[] array, int window) {
     StringBuilder sb = new StringBuilder();
-    Deque<Node> deque = new LinkedList<>();
-
+    Deque<Node> deque = new ArrayDeque<>();
     for (int i = 0; i < array.length; i++) {
       int now = array[i];
 
       while (!deque.isEmpty() && deque.getLast().value > now) {
         deque.removeLast();
       }
-
       deque.addLast(new Node(i, now));
-      if (deque.getFirst().index <= i - windowSize) {
+
+      if (deque.getFirst().index <= i - window) {
         deque.removeFirst();
       }
-      sb.append(deque.getFirst().value)
-          .append(" ");
-
+      sb.append(deque.getFirst().value).append(" ");
     }
     return sb.toString();
   }
 
+  public static void main(String[] args) {
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))) {
+      String[] sizes = br.readLine().split(" ");
+      int size = Integer.parseInt(sizes[0]);
+      int window = Integer.parseInt(sizes[1]);
+      String[] inputs = br.readLine().split(" ");
+      int[] array = new int[size];
+      for (int i = 0; i < size; i++) {
+        array[i] = Integer.parseInt(inputs[i]);
+      }
+
+      String result = solution(array, window);
+      bw.write(result);
+      bw.flush();
+    } catch (IOException e) {
+      System.out.println(e.getStackTrace()[0]);
+    }
+  }
+
   static class Node {
 
-    public int index;
-    public int value;
+    int index;
+    int value;
 
-    Node(int index, int value) {
+    public Node(int index, int value) {
       this.index = index;
       this.value = value;
     }
