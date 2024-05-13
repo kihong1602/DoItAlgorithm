@@ -11,19 +11,30 @@ public class Problem025 {
 
   // 백준 13023 골드5 ABCDE
   // DFS
-  // A-B, B-C, C-D, D-E인 경우가 존재하는지 구하는 프로그램 작성
   private static ArrayList<Integer>[] graph;
   private static boolean[] visited;
-  private static boolean arrive = false;
+  private static boolean arrive;
+
+  private static void dfs(int v, int depth) {
+    if (depth == 5 || arrive) {
+      arrive = true;
+      return;
+    }
+    visited[v] = true;
+    for (int next : graph[v]) {
+      if (!visited[next]) {
+        dfs(next, depth + 1);
+      }
+    }
+    visited[v] = false;
+  }
 
   public static void main(String[] args) {
     try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out))) {
-      String[] size = br.readLine()
-          .split(" ");
-      int node = Integer.parseInt(size[0]);
-      int line = Integer.parseInt(size[1]);
-
+      String[] sizes = br.readLine().split(" ");
+      int node = Integer.parseInt(sizes[0]);
+      int edge = Integer.parseInt(sizes[1]);
       graph = new ArrayList[node];
       visited = new boolean[node];
 
@@ -31,11 +42,10 @@ public class Problem025 {
         graph[i] = new ArrayList<>();
       }
 
-      for (int i = 0; i < line; i++) {
-        String[] input = br.readLine()
-            .split(" ");
-        int u = Integer.parseInt(input[0]);
-        int v = Integer.parseInt(input[1]);
+      for (int i = 0; i < edge; i++) {
+        String[] inputs = br.readLine().split(" ");
+        int u = Integer.parseInt(inputs[0]);
+        int v = Integer.parseInt(inputs[1]);
         graph[u].add(v);
         graph[v].add(u);
       }
@@ -45,24 +55,11 @@ public class Problem025 {
           break;
         }
       }
-      bw.write(arrive ? "1" : "0");
+      String result = arrive ? "1" : "0";
+      bw.write(result);
       bw.flush();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(e.getStackTrace()[0]);
     }
-  }
-
-  private static void dfs(int now, int depth) {
-    if (depth == 5 || arrive) {
-      arrive = true;
-      return;
-    }
-    visited[now] = true;
-    for (int next : graph[now]) {
-      if (!visited[next]) {
-        dfs(next, depth + 1);
-      }
-    }
-    visited[now] = false;
   }
 }
